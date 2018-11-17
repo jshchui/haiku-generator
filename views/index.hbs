@@ -1,0 +1,24 @@
+<div class="container">
+  <h1>{{title}}</h1>
+  {{!-- <img id="imageFile" src="./images/{{pictureURL}}" /> --}}
+  {{!-- <form id="form1" enctype="multipart/form-data" name="Upload" method="post"> --}}
+    {{!-- <img id="output" /> --}}
+    {{!-- <input id="imageFile" type='file' /> --}}
+    {{!-- <img id="blah" src="#" alt="your image" /> --}}
+    {{!-- <input type="submit" value="Submit" value="Upload" /> --}}
+  {{!-- </form> --}}
+
+  <form action="/profile" method="post" enctype="multipart/form-data">
+    <input type="file" name="avatar" />
+    <input type="submit" value="Submit" value="Upload" />
+  </form>
+
+
+  <div id="responseLOL">
+
+  </div>
+
+  <p>{{sentence1}}</p>
+  <p>{{sentence2}}</p>
+  <p>{{sentence3}}</p>
+</div>
