@@ -1,10 +1,10 @@
 var express = require('express');
 var router = express.Router();
-var Promise = require('promise');
+// var Promise = require('promise');
 var syllable = require('syllable');
 var Sentencer = require('sentencer');
-var WordPOS = require('wordpos'),
-    wordpos = new WordPOS();
+// var WordPOS = require('wordpos'),
+//     wordpos = new WordPOS();
 
 const vision = require('@google-cloud/vision');
 
