@@ -8,17 +8,30 @@
     {{!-- <input type="submit" value="Submit" value="Upload" /> --}}
   {{!-- </form> --}}
 
-  <form action="/profile" method="post" enctype="multipart/form-data">
-    <input type="file" name="avatar" />
-    <input type="submit" value="Submit" value="Upload" />
+  <div class="haiku-image-container">
+    <img src="./images/{{pictureURL}}" id="haiku-image" />
+  </div>
+
+  <div class="haiku">
+    <p>{{sentence1}}</p>
+    <p>{{sentence2}}</p>
+    <p>{{sentence3}}</p>
+  </div>
+
+  <form class="file-form" id="myForm" action="/profile" method="post" enctype="multipart/form-data">
+
+    <label class="file-upload" for="file-upload">
+      <input id="file-upload" type="file" name="avatar" />
+      Upload
+    </label>
+
+    <label class="file-submit" for="file-submit">
+      <input id="file-submit" type="submit" />
+      Submit
+    </label>
   </form>
 
 
-  <div id="responseLOL">
+  <div id="responseLOL"></div>
 
-  </div>
-
-  <p>{{sentence1}}</p>
-  <p>{{sentence2}}</p>
-  <p>{{sentence3}}</p>
 </div>

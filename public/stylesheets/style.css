@@ -9,10 +9,40 @@ a {
 
 img {
   width: 100%;
+  vertical-align: middle;
+}
+
+input[type="file"], input[type="submit"] {
+  display: none;
 }
 
 .container {
   text-align: center;
   max-width: 800px;
   margin: 0 auto;
+}
+
+.haiku-image-container {
+  max-width: 400px;
+  min-height: 200px;
+  margin: 0 auto;
+  box-shadow: 1px 1px 5px 1px grey;
+}
+
+.haiku {
+  font-weight: bolder;
+}
+
+.file-form {
+  display: flex;
+  justify-content: center;
+}
+
+.file-upload, .file-submit {
+  background: black;
+  padding: 1em;
+  color: white;
+  text-transform: uppercase;
+  font-weight: bold;
+  margin: 1em;
 }

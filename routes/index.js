@@ -13,149 +13,58 @@ const client = new vision.ImageAnnotatorClient({
 });
 
 var multer = require('multer');
-var upload = multer({ dest: 'uploads/'});
+var upload = multer({ dest: 'public/images'});
 
 router.post('/profile', upload.single('avatar'), function (req, res, next) {
   console.log('req.file ::', req.file);
   console.log('req.body ::', req.body);
+  console.log('req.file[path]: ', req.file['path']);
+  // res.status(200).send(`${req.file}`)
+
+  const pictureFile = req.file['filename'];
+
+  const webWordBank = webDetect(req.file['path']).then(results => {
+    labelDetect(req.file['path']).then(labelResults => {
+      const combinedWordBank = [...new Set(results.concat(labelResults))];
+      return sortBySyllable(combinedWordBank);
+    }).then(wordBank => {
+
+      const adjectives = sortBySyllable(generateAdjectives(10));
+      const mySentence1 = generateSentence(wordBank, 5, adjectives);
+      const mySentence2 = generateSentence(wordBank, 7, adjectives);
+      const mySentence3 = generateSentence(wordBank, 5, adjectives);
+
+      console.log(mySentence1);
+      console.log(mySentence2);
+      console.log(mySentence3);
+
+      res.render('index', {
+        title: 'Haiku Generated',
+        sentence1: mySentence1,
+        sentence2: mySentence2,
+        sentence3: mySentence3,
+        pictureURL: pictureFile,
+      })
+    })
+    .catch(err => {
+      console.error('ERROR:', err);
+    })
+  })
+  .catch(err => {
+    console.error('ERROR:', err);
+  }); 
 })
 
-// router.post('/:file', function(req, res) {
-router.post('/:file', upload.single('avatar'), function(req, res) {
-  console.log('i entered here');
-  // res.json('index', {
-  //   help: 'helpme'
-  // })
-
-
-  var contentType = req.headers['content-type'] || ''
-    , mime = contentType.split(';')[0];
-
-  // if (mime != 'text/plain') {
-  //   return next();
-  // }
-
-  var data = '';
-  req.setEncoding('utf8');
-  req.on('data', function(chunk) {
-    data += chunk;
-  });
-  req.on('end', function() {
-    req.rawBody = data;
-
-    console.log('req.rawBody: ', req.rawBody);
-  });
-
-  console.log('req.params: ', req.params);
-  console.log('req.body: ', req.body);
-  console.log('res.body: ', res.body);
-  console.log('req.fields: ', req.fields);
-  console.log('req.route: ', req.route);
-  console.log('req.file: ', req.file);
-
-  // res.status(200).send(req.rawBody);
-  res.status(200).send(`${req.rawBody}`);
-  // res.status(200).json({
-  //   json: request
-  // });
-});
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  
-  // const kind = wordpos.lookupNoun('kind', console.log).then(x => {
-  //   res.json({
-  //     x
-  //   })
-  // });
-
-
-  // const wordBank = labelDetect('./dog.jpg').then(results => {
-  //   console.log('results: ', results);
-  //   return results;
-  // });
   const pictureFile = 'cat.jpg';
   const pictureDirectory = `./public/images/${pictureFile}`;
 
-  // const webWordBank = webDetect(pictureDirectory).then(results => {
-  //   labelDetect(pictureDirectory).then(labelResults => {
-  //     console.log('results: ', results);
-  //     console.log('next results: ', labelResults);
-  //     // combines the two word array and also remove duplicates
-  //     const combinedWordBank = [...new Set(results.concat(labelResults))];
-  //     return sortBySyllable(combinedWordBank);
-  //   }).then(wordBank => {
-
-  //     console.log('wordBank:', wordBank);
-
-  //     const adjectives = sortBySyllable(generateAdjectives(10));
-  //     const mySentence1 = generateSentence(wordBank, 5, adjectives);
-  //     const mySentence2 = generateSentence(wordBank, 7, adjectives);
-  //     const mySentence3 = generateSentence(wordBank, 5, adjectives);
-
-  //     console.log(mySentence1);
-  //     console.log(mySentence2);
-  //     console.log(mySentence3);
-
-  //     // res.json({
-  //     //   wordBank
-  //     // })
-
-  //     res.render('index', { 
-  //       title: 'Haiku',
-  //       condition: false,
-  //       sentence1: mySentence1,
-  //       sentence2: mySentence2,
-  //       sentence3: mySentence3,
-  //       pictureURL: pictureFile
-  //     });
-  //   })
-  //   .catch(err => {
-  //     console.error('ERROR:', err);
-  //   })
-  // })
-  // .catch(err => {
-  //   console.error('ERROR:', err);
-  // }); 
-
   res.render('index', {
     title: 'HAIKU',
-    sentence1: 'mySentence1',
-    sentence2: 'mySentence2',
-    sentence3: 'mySentence3',
     pictureURL: pictureFile
   })
-  
-
-    // const wordBank2 = {
-    //   "1": [ "cat", "eye"],
-    //   "2": [ "mammal", "whiskers", "fauna", "kitten", "organ"],
-    //   "3": [ "vertebrate"],
-    //   "4": [ "cat like mammal"],
-    //   "7": [ "small to medium sized cats"]
-    // }
-
-    // const adjectives = sortBySyllable(generateAdjectives(10));
-    // console.log('adjectiveList: ', adjectives);
-
-    // // console.log(wordBank2);
-    // const mySentence1 = generateSentence(wordBank2, 5, adjectives);
-    // const mySentence2 = generateSentence(wordBank2, 7, adjectives);
-    // const mySentence3 = generateSentence(wordBank2, 5, adjectives);
-
-    // console.log(mySentence1);
-    // console.log(mySentence2);
-    // console.log(mySentence3);
-
-    // // testing wordPOS npm
-    // console.log('LOOKING UP CAT:');
-    // wordpos.lookupNoun('cat', console.log);
-
-    // res.json({
-    //   results
-    // })
-
-  // res.render('index', { title: 'Express' });
 });
 
 // function generateSentence(words, syllables) {
@@ -286,3 +195,44 @@ function webDetect(imagePath) {
 }
 
 module.exports = router;
+
+
+
+
+
+
+
+
+// router.post('/:file', upload.single('avatar'), function(req, res) {
+//   console.log('i entered here');
+//   var contentType = req.headers['content-type'] || ''
+//     , mime = contentType.split(';')[0];
+
+//   // if (mime != 'text/plain') {
+//   //   return next();
+//   // }
+
+//   var data = '';
+//   req.setEncoding('utf8');
+//   req.on('data', function(chunk) {
+//     data += chunk;
+//   });
+//   req.on('end', function() {
+//     req.rawBody = data;
+
+//     console.log('req.rawBody: ', req.rawBody);
+//   });
+
+//   console.log('req.params: ', req.params);
+//   console.log('req.body: ', req.body);
+//   console.log('res.body: ', res.body);
+//   console.log('req.fields: ', req.fields);
+//   console.log('req.route: ', req.route);
+//   console.log('req.file: ', req.file);
+
+//   // res.status(200).send(req.rawBody);
+//   res.status(200).send(`${req.rawBody}`);
+//   // res.status(200).json({
+//   //   json: request
+//   // });
+// });
