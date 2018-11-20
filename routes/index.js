@@ -6,6 +6,8 @@ var Sentencer = require('sentencer');
 // var WordPOS = require('wordpos'),
 //     wordpos = new WordPOS();
 
+var XMLHttpRequest = require('xmlhttprequest').XMLHttpRequest;
+
 const vision = require('@google-cloud/vision');
 
 const client = new vision.ImageAnnotatorClient({
@@ -16,35 +18,97 @@ var multer = require('multer');
 var upload = multer({ dest: 'public/images'});
 
 router.post('/profile', upload.single('avatar'), function (req, res, next) {
-  console.log('req.file ::', req.file);
-  console.log('req.body ::', req.body);
-  console.log('req.file[path]: ', req.file['path']);
-  // res.status(200).send(`${req.file}`)
+
+  // const testValue = httpGet('https://api.datamuse.com/words?rel_jjb=ocean', result => {
+  //   console.log('------------------------------------------------------')
+  //   console.log('result: ', result);
+  //   return result;
+  // }).then(resultTWOOOO => {
+  //   console.log('resultTWOOO: ', resultTWOOOO);
+  // })
+    // .then(resultSecond => {
+    //   console.log('OMG WTF BBQ RESULT SECOND HERE: ', resultSecond);
+    // })
+    // .catch(err => {
+    //   console.error('ERROR:', err);
+    // })
+
+    // const testValue2 = makeRequest('GET', 'https://api.datamuse.com/words?rel_jjb=ocean')
+    //   .then(function (result) {
+    //     console.log('datums: ', result);
+    //   })
+    //   .catch(function (err) {
+    //     console.error('Augh, there was a error UGHGHHH!', err.statusText);
+    //   })
+
+
+
+  // console.log('req.file ::', req.file);
+  // console.log('req.body ::', req.body);
+  // console.log('req.file[path]: ', req.file['path']);
+  // // res.status(200).send(`${req.file}`)
 
   const pictureFile = req.file['filename'];
 
   const webWordBank = webDetect(req.file['path']).then(results => {
     labelDetect(req.file['path']).then(labelResults => {
-      const combinedWordBank = [...new Set(results.concat(labelResults))];
-      return sortBySyllable(combinedWordBank);
+      // console.log('results:', results);
+      // console.log('labelResults: ', labelResults);
+      // const combinedWordBank = [...new Set(results.concat(labelResults))];
+      const combinedWordBank = sortBySyllable([...new Set(results['arrayOfWords'].concat(labelResults))]);
+      const bestGuess = results['bestGuess'];
+      const wordBank = {}
+      wordBank['combinedWordBank'] = combinedWordBank;
+      wordBank['bestGuess'] = bestGuess;
+      return wordBank;
     }).then(wordBank => {
 
-      const adjectives = sortBySyllable(generateAdjectives(10));
-      const mySentence1 = generateSentence(wordBank, 5, adjectives);
-      const mySentence2 = generateSentence(wordBank, 7, adjectives);
-      const mySentence3 = generateSentence(wordBank, 5, adjectives);
+      // const adjectives = sortBySyllable(generateAdjectives(10));
 
-      console.log(mySentence1);
-      console.log(mySentence2);
-      console.log(mySentence3);
+      const bestGuessWord = wordBank['bestGuess'].trim();
+      console.log('bestGuessWord: ', bestGuessWord);
+      const adjectiveOfBestWordObjects = makeRequest('GET', `https://api.datamuse.com/words?rel_jjb=${wordBank['bestGuess']}`)
+        .then(function (result) {
+          const arrayOfAdjectives = sortBySyllable(JSON.parse(result).map(wordObject => {
+            return wordObject['word'];
+          }));
+          console.log('combinedWordBank: ', wordBank['combinedWordBank']);
 
-      res.render('index', {
-        title: 'Haiku Generated',
-        sentence1: mySentence1,
-        sentence2: mySentence2,
-        sentence3: mySentence3,
-        pictureURL: pictureFile,
-      })
+          const mySentence1 = generateSentence(wordBank['combinedWordBank'], 5, arrayOfAdjectives);
+          const mySentence2 = generateSentence(wordBank['combinedWordBank'], 7, arrayOfAdjectives);
+          const mySentence3 = generateSentence(wordBank['combinedWordBank'], 5, arrayOfAdjectives);
+
+          console.log(mySentence1);
+          console.log(mySentence2);
+          console.log(mySentence3);
+
+          res.render('index', {
+            title: 'Haiku Generated',
+            sentence1: mySentence1,
+            sentence2: mySentence2,
+            sentence3: mySentence3,
+            pictureURL: pictureFile,
+          })
+        })
+        .catch(function (err) {
+          console.error('Augh, there was a error UGHGHHH!', err);
+        })
+
+      // const mySentence1 = generateSentence(wordBank['combinedWordBank'], 5, adjectives);
+      // const mySentence2 = generateSentence(wordBank['combinedWordBank'], 7, adjectives);
+      // const mySentence3 = generateSentence(wordBank['combinedWordBank'], 5, adjectives);
+
+      // console.log(mySentence1);
+      // console.log(mySentence2);
+      // console.log(mySentence3);
+
+      // res.render('index', {
+      //   title: 'Haiku Generated',
+      //   sentence1: mySentence1,
+      //   sentence2: mySentence2,
+      //   sentence3: mySentence3,
+      //   pictureURL: pictureFile,
+      // })
     })
     .catch(err => {
       console.error('ERROR:', err);
@@ -119,6 +183,11 @@ function generateSentence(words, syllables, adjectives) {
   // this should remove the word from the word bank
   const firstWordIndex = words[firstWordSyllables] && words[firstWordSyllables].indexOf(firstWord);
   if ((firstWordIndex || firstWordIndex === 0) && (firstWordIndex !== -1)) {
+    // console.log('----------------------------------------------');
+    // console.log('words: ', words);
+    // console.log('words[firstwordSyllables]: ', words[firstWordSyllables]);
+    // console.log('firstWordSyllalbes: ', firstWordSyllables);
+    // console.log('------------------------------------------------------');
     words[firstWordSyllables].splice(firstWordIndex, 1);
   }
   const remainingSyllables = syllables - firstWordSyllables;
@@ -156,6 +225,10 @@ function sortBySyllable(arrayOfWords) {
     sortedBySyllables['1'] = ['real', 'ill', 'lax', 'coy', 'prime', 'bored', 'fair'];
   }
 
+  if (sortedBySyllables['0']) {
+    delete sortedBySyllables['0'];
+  }
+
   return sortedBySyllables;
 }
 
@@ -184,14 +257,71 @@ function webDetect(imagePath) {
       const webEntities = results[0].webDetection['webEntities'];
       const bestGuessLabels = results[0].webDetection['bestGuessLabels'];
       const arrayOfWords = [];
+      const webWordBank = {};
+
+      console.log('webEntities: ', webEntities);
 
       webEntities.forEach(entity => {
         arrayOfWords.push(entity.description.toLowerCase());
       });
-      // wordBank['bestGuess'] = bestGuessLabels[0].label;
+      webWordBank['arrayOfWords'] = arrayOfWords;
+      webWordBank['bestGuess'] = bestGuessLabels[0].label;
 
-      return arrayOfWords; 
+      // if best guess label is one word, use best guess label
+      // if not use the first word in the web entities
+      // if not then use the last word of the first word in best guess label
+      if(bestGuessLabels[0].label.indexOf(' ') === -1) {
+        webWordBank['bestGuess'] = bestGuessLabels[0].label;
+      } else if (arrayOfWords[0].indexOf(' ') === -1) {
+        webWordBank['bestGuess'] = arrayOfWords[0];
+      } else {
+        let bestGuessWordSplit = bestGuessLabels[0].label.split(' ');
+        webWordBank['bestGuess'] = bestGuessWordSplit[bestGuessWordSplit.length - 1];
+      }
+
+      // return arrayOfWords; 
+      return webWordBank; 
     });
+}
+
+function httpGet(url, callback) {
+  let xmlHttp = new XMLHttpRequest();
+  console.log('rjunning');
+  xmlHttp.onreadystatechange = function() {
+    if(xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+
+      console.log ('i am rest: ', xmlHttp.responseText)
+      if(callback) callback(xmlHttp.responseText);
+      return null;
+    }
+
+  }
+  xmlHttp.open('GET', url, true);
+  xmlHttp.send( null );
+}
+
+function makeRequest(method, url) {
+  return new Promise(function (resolve, reject) {
+    var xhr = new XMLHttpRequest();
+    xhr.open(method, url, true);
+    xhr.onload = function () {
+      if (this.status >= 200 && this.status < 300) {
+        resolve(xhr.responseText);
+      } else {
+        reject({
+          status: this.status,
+          statusText: xhr.statusText
+        });
+      }
+    };
+    xhr.onerror = function () {
+      reject({
+        status: this.status,
+        statusText: xhr.statusText
+      });
+    };
+    xhr.send();
+  });
 }
 
 module.exports = router;
