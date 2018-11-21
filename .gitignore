@@ -9,6 +9,8 @@
 # production
 /build
 
+/public/images
+
 # css build files
 src/App.css
 src/assets/assetcss/triangle.css
