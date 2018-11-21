@@ -17,62 +17,40 @@ const client = new vision.ImageAnnotatorClient({
 var multer = require('multer');
 var upload = multer({ dest: 'public/images'});
 
-router.post('/profile', upload.single('avatar'), function (req, res, next) {
-
-  // const testValue = httpGet('https://api.datamuse.com/words?rel_jjb=ocean', result => {
-  //   console.log('------------------------------------------------------')
-  //   console.log('result: ', result);
-  //   return result;
-  // }).then(resultTWOOOO => {
-  //   console.log('resultTWOOO: ', resultTWOOOO);
-  // })
-    // .then(resultSecond => {
-    //   console.log('OMG WTF BBQ RESULT SECOND HERE: ', resultSecond);
-    // })
-    // .catch(err => {
-    //   console.error('ERROR:', err);
-    // })
-
-    // const testValue2 = makeRequest('GET', 'https://api.datamuse.com/words?rel_jjb=ocean')
-    //   .then(function (result) {
-    //     console.log('datums: ', result);
-    //   })
-    //   .catch(function (err) {
-    //     console.error('Augh, there was a error UGHGHHH!', err.statusText);
-    //   })
-
-
-
+router.post('/', upload.single('avatar'), function (req, res, next) {
   // console.log('req.file ::', req.file);
   // console.log('req.body ::', req.body);
   // console.log('req.file[path]: ', req.file['path']);
   // // res.status(200).send(`${req.file}`)
 
   const pictureFile = req.file['filename'];
-
   const webWordBank = webDetect(req.file['path']).then(results => {
     labelDetect(req.file['path']).then(labelResults => {
-      // console.log('results:', results);
-      // console.log('labelResults: ', labelResults);
-      // const combinedWordBank = [...new Set(results.concat(labelResults))];
       const combinedWordBank = sortBySyllable([...new Set(results['arrayOfWords'].concat(labelResults))]);
-      const bestGuess = results['bestGuess'];
+
+      // best guess for web but not currently used
+      const bestGuessWeb = results['bestGuess'];
       const wordBank = {}
       wordBank['combinedWordBank'] = combinedWordBank;
-      wordBank['bestGuess'] = bestGuess;
+      // wordBank['wordForAdjective'] = bestGuessWeb;
+      let i = 0;
+      while( (labelResults[i].indexOf(' ') != -1) && i < labelResults.length) {
+        i++
+      }
+
+      wordBank['wordForAdjective'] = labelResults[i];
+
       return wordBank;
     }).then(wordBank => {
 
       // const adjectives = sortBySyllable(generateAdjectives(10));
 
-      const bestGuessWord = wordBank['bestGuess'].trim();
-      console.log('bestGuessWord: ', bestGuessWord);
-      const adjectiveOfBestWordObjects = makeRequest('GET', `https://api.datamuse.com/words?rel_jjb=${wordBank['bestGuess']}`)
+      const bestGuessWord = wordBank['wordForAdjective'].trim();
+      const adjectiveOfBestWordObjects = makeRequest('GET', `https://api.datamuse.com/words?rel_jjb=${wordBank['wordForAdjective']}`)
         .then(function (result) {
           const arrayOfAdjectives = sortBySyllable(JSON.parse(result).map(wordObject => {
             return wordObject['word'];
           }));
-          console.log('combinedWordBank: ', wordBank['combinedWordBank']);
 
           const mySentence1 = generateSentence(wordBank['combinedWordBank'], 5, arrayOfAdjectives);
           const mySentence2 = generateSentence(wordBank['combinedWordBank'], 7, arrayOfAdjectives);
@@ -93,22 +71,6 @@ router.post('/profile', upload.single('avatar'), function (req, res, next) {
         .catch(function (err) {
           console.error('Augh, there was a error UGHGHHH!', err);
         })
-
-      // const mySentence1 = generateSentence(wordBank['combinedWordBank'], 5, adjectives);
-      // const mySentence2 = generateSentence(wordBank['combinedWordBank'], 7, adjectives);
-      // const mySentence3 = generateSentence(wordBank['combinedWordBank'], 5, adjectives);
-
-      // console.log(mySentence1);
-      // console.log(mySentence2);
-      // console.log(mySentence3);
-
-      // res.render('index', {
-      //   title: 'Haiku Generated',
-      //   sentence1: mySentence1,
-      //   sentence2: mySentence2,
-      //   sentence3: mySentence3,
-      //   pictureURL: pictureFile,
-      // })
     })
     .catch(err => {
       console.error('ERROR:', err);
@@ -126,30 +88,11 @@ router.get('/', function(req, res, next) {
   const pictureDirectory = `./public/images/${pictureFile}`;
 
   res.render('index', {
-    title: 'HAIKU',
+    title: 'Haiku Generator',
     pictureURL: pictureFile
   })
 });
 
-// function generateSentence(words, syllables) {
-//   let sentence = '';
-//   const firstAdjective = Sentencer.make("{{ adjective }}");
-//   console.log('firstAdjective: ', firstAdjective);
-
-//   const firstArray = randomKeySelector(words, syllables);
-//   const firstWord = firstArray[Math.floor(Math.random() * firstArray.length)];
-//   const firstWordSyllables = syllable(`${firstWord} ${firstAdjective}`);
-
-//   const remainingSyllables = syllables - firstWordSyllables;
-
-//   sentence += `${firstAdjective} ${firstWord}`;
-
-//   if (remainingSyllables > 0) {
-//     sentence += ` ${generateSentence(words, remainingSyllables)}`;
-//   }
-
-//   return sentence;
-// }
 
 function randomKeySelector(wordObj, maxSyllable) {
   // get keys which are all the syllables
@@ -157,7 +100,6 @@ function randomKeySelector(wordObj, maxSyllable) {
 
   // remove all syllables that are over maxSyllable
   for(let i = 0; i < keys.length; i++) {
-    // console.log('parseIntKey: ', parseInt(keys[i]), 'maxSyllables: ', parseInt(maxSyllable));
     if (parseInt(keys[i]) > parseInt(maxSyllable)) {
       keys.splice(i, 1);
       i--;
@@ -171,14 +113,10 @@ function randomKeySelector(wordObj, maxSyllable) {
 function generateSentence(words, syllables, adjectives) {
   let sentence = '';
 
-  // console.log('words: ', words);
-
   const firstArray = randomKeySelector(words, syllables);
-  // console.log('firstArray: ', firstArray);
   const firstArrayRandomNumber = Math.floor(Math.random() * firstArray.length);
   const firstWord = firstArray && firstArray[firstArrayRandomNumber];
   const firstWordSyllables = firstWord && syllable(firstWord);
-
 
   // this should remove the word from the word bank
   const firstWordIndex = words[firstWordSyllables] && words[firstWordSyllables].indexOf(firstWord);
@@ -194,7 +132,6 @@ function generateSentence(words, syllables, adjectives) {
   sentence += firstWord;
   if (remainingSyllables > 0) {
     sentence = `${generateSentence(adjectives || words, remainingSyllables)} ${sentence}`;
-    // sentence = `${generateSentence(words, remainingSyllables)} ${sentence}`;
   }
 
   return sentence;
