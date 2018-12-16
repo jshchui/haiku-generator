@@ -1,21 +1,18 @@
 var express = require('express');
 var router = express.Router();
-// var Promise = require('promise');
+
+// syllable counter, might need to replace with a function instead of this library
 var syllable = require('syllable');
 var Sentencer = require('sentencer');
-// var WordPOS = require('wordpos'),
-//     wordpos = new WordPOS();
-
 var XMLHttpRequest = require('xmlhttprequest').XMLHttpRequest;
-
-const vision = require('@google-cloud/vision');
-
-const client = new vision.ImageAnnotatorClient({
-  keyFilename: 'jackie-google-vision-key.json'
-});
 
 var multer = require('multer');
 var upload = multer({ dest: 'public/images'});
+
+const vision = require('@google-cloud/vision');
+const client = new vision.ImageAnnotatorClient({
+  keyFilename: 'jackie-google-vision-key.json'
+});
 
 router.post('/', upload.single('avatar'), function (req, res, next) {
   // console.log('req.file ::', req.file);
@@ -110,9 +107,12 @@ function randomKeySelector(wordObj, maxSyllable) {
   return wordObj[keys[ keys.length * Math.random() << 0]];
 }
 
+// recursivly generates sentence with total syllables given
+// will generate sentence based on the words given, syllables, and adjectives given
 function generateSentence(words, syllables, adjectives) {
   let sentence = '';
 
+  // randomly selects a syllable section an then randomly select a word from the section
   const firstArray = randomKeySelector(words, syllables);
   const firstArrayRandomNumber = Math.floor(Math.random() * firstArray.length);
   const firstWord = firstArray && firstArray[firstArrayRandomNumber];
@@ -128,6 +128,7 @@ function generateSentence(words, syllables, adjectives) {
     // console.log('------------------------------------------------------');
     words[firstWordSyllables].splice(firstWordIndex, 1);
   }
+
   const remainingSyllables = syllables - firstWordSyllables;
   sentence += firstWord;
   if (remainingSyllables > 0) {
@@ -137,6 +138,8 @@ function generateSentence(words, syllables, adjectives) {
   return sentence;
 }
 
+
+// randomly generates adjectives from library sentencer
 function generateAdjectives(amount) {
   let adjectiveList = [];
   for(let i = 0; i < amount; i++) {
@@ -146,6 +149,7 @@ function generateAdjectives(amount) {
   return adjectiveList;
 }
 
+// takes an array of words and sort them by syllable, returns an object
 function sortBySyllable(arrayOfWords) {
   sortedBySyllables = {};
 
@@ -169,6 +173,7 @@ function sortBySyllable(arrayOfWords) {
   return sortedBySyllables;
 }
 
+// get words from label detection in google vision
 function labelDetect(imagePath) {
   return client
     .labelDetection(imagePath)
@@ -187,6 +192,7 @@ function labelDetect(imagePath) {
     });
 }
 
+// get words from web detection in google vision
 function webDetect(imagePath) {
   return client
     .webDetection(imagePath)

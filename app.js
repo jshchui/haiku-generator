@@ -17,6 +17,8 @@ app.engine('hbs', hbs({extname: 'hbs', defaultLayout: 'layout', layoutsDir: __di
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
 
+
+// limits picture file size, max 1mb
 var options = {
   inflate: true,
   limit: '1000kb',
