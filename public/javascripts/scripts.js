@@ -17,6 +17,7 @@ document.addEventListener('DOMContentLoaded', function(){
     let haikuImage = document.getElementById('haiku-image');
     haikuImage.src = URL.createObjectURL(e.target.files[0]);
 
+    document.getElementById('loading-overlay').style.display = 'flex';
     document.getElementById('myForm').submit();
   }
 
