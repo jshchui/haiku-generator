@@ -22,6 +22,7 @@ document.addEventListener('DOMContentLoaded', function(){
     console.log('file filter was run');
   }
 
+
   // function uploadPicture(e) {
   //   console.log('form: ', e);
   //   e.preventDefault();

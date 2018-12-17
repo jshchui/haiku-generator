@@ -14,6 +14,8 @@ const client = new vision.ImageAnnotatorClient({
   keyFilename: 'jackie-google-vision-key.json'
 });
 
+const fs = require('fs');
+
 router.post('/', upload.single('avatar'), function (req, res, next) {
   // console.log('req.file ::', req.file);
   // console.log('req.body ::', req.body);
@@ -84,9 +86,20 @@ router.get('/', function(req, res, next) {
   const pictureFile = 'cat.jpg';
   const pictureDirectory = `./public/images/${pictureFile}`;
 
-  res.render('index', {
-    title: 'Haiku Generator',
-    pictureURL: pictureFile
+  const imageDirectory = './public/images/';
+
+  
+  fs.readdir(imageDirectory, (err, files) => {
+    let imagesArray = []
+    files.forEach(file => {
+      imagesArray.push(file)
+    });
+
+    res.render('index', {
+      title: 'Haiku Generator',
+      pictureURL: pictureFile,
+      imagesInFolder: imagesArray,
+    })
   })
 });
 
