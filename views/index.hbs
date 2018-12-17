@@ -1,47 +1,48 @@
 <div id="loading-overlay" class="loading-overlay">
   <h2>Generating Haiku...</h2>
 </div>
+
+
 <div class="container">
-  <h1>{{title}}</h1>
-  {{!-- <img id="imageFile" src="./images/{{pictureURL}}" /> --}}
-  {{!-- <form id="form1" enctype="multipart/form-data" name="Upload" method="post"> --}}
-    {{!-- <img id="output" /> --}}
-    {{!-- <input id="imageFile" type='file' /> --}}
-    {{!-- <img id="blah" src="#" alt="your image" /> --}}
-    {{!-- <input type="submit" value="Submit" value="Upload" /> --}}
-  {{!-- </form> --}}
+  {{!-- {{#if pictureURL}} --}}
+    <div class="haiku-image-container {{#unless pictureURL}}haiku-image-container--hidden{{/unless}}">
+      <img src="./images/{{pictureURL}}" id="haiku-image" />
+    </div>
+  {{!-- {{/if}} --}}
 
-  <div class="haiku-image-container">
-    <img src="./images/{{pictureURL}}" id="haiku-image" />
-  </div>
+  {{#if title}}
+    <h1>{{title}}</h1>
+  {{/if}}
 
-  <div class="haiku">
-    <p>{{sentence1}}</p>
-    <p>{{sentence2}}</p>
-    <p>{{sentence3}}</p>
-  </div>
+  {{#if sentence1}}
+    <div class="haiku">
+      <p>{{sentence1}}</p>
+      <p>{{sentence2}}</p>
+      <p>{{sentence3}}</p>
+    </div>
+  {{/if}}
 
   <form class="file-form" id="myForm" action="/" method="post" enctype="multipart/form-data">
-
     <label class="file-upload" for="file-upload">
       <input id="file-upload" type="file" name="avatar" />
-      Upload
+      {{#if pictureURL}}retry{{else}}upload{{/if}}
     </label>
 
-    <label class="file-submit" for="file-submit">
+    {{!-- <label class="file-submit" for="file-submit">
       <input id="file-submit" type="submit" />
-      Submit
-    </label>
+      submit
+    </label> --}}
   </form>
 
-  <div class="files">
+
+
+  {{!-- <div class="files">
     <h2>Files in Image Folder</h2>
     {{#each imagesInFolder}}
       <hr>
       <p>{{this}}</p>
     {{/each}}
-  </div>
-
+  </div> --}}
 
   <div id="responseLOL"></div>
 

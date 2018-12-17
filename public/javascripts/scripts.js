@@ -16,6 +16,8 @@ document.addEventListener('DOMContentLoaded', function(){
     console.log('e: ', e);
     let haikuImage = document.getElementById('haiku-image');
     haikuImage.src = URL.createObjectURL(e.target.files[0]);
+
+    document.getElementById('myForm').submit();
   }
 
   function fileFilter(req, file, cb) {

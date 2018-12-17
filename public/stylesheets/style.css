@@ -1,12 +1,20 @@
+@import url('https://fonts.googleapis.com/css?family=Montserrat:300');
+
 html {
   height: 100%;
+  color: gray;
+}
+
+h1 {
+  font: 24px "Montserrat", sans-serif;
+  text-transform: uppercase;
+  color: gray;
 }
 
 body {
-  /* padding: 50px; */
   margin: 0;
   padding: 0;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  font: 14px "Cambria", serif;
   height: 100%;
 }
 
@@ -17,8 +25,6 @@ body {
   position: fixed;
   width: 100%;
   height: 100%;
-  /* align-items: center;
-  justify-content: center; */
 }
 
 a {
@@ -28,6 +34,7 @@ a {
 img {
   width: 100%;
   vertical-align: middle;
+  border-radius: 10px;
 }
 
 input[type="file"], input[type="submit"] {
@@ -36,31 +43,53 @@ input[type="file"], input[type="submit"] {
 
 .container {
   text-align: center;
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 1.5em;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .haiku-image-container {
-  max-width: 400px;
-  margin: 0 auto;
+  margin: 0 1em 1em;
   box-shadow: 1px 1px 5px 1px grey;
+  border-radius: 10px;
+  max-width: 500px;
 }
 
-.haiku {
-  font-weight: bolder;
+.haiku-image-container--hidden {
+  visibility: hidden;
+  position: absolute;
 }
 
 .file-form {
   display: flex;
   justify-content: center;
+  margin: 0.8em;
 }
 
 .file-upload, .file-submit {
-  background: black;
-  padding: 1em;
+  background: grey;
+  padding: 0.5em 2em;
+  border-radius: 0.5em;
   color: white;
-  text-transform: uppercase;
-  font-weight: bold;
-  margin: 1em;
+  text-transform: lowercase;
+  margin: 0 1em;
+}
+
+@media only screen and (max-width: 500px) {
+  .container {
+    flex-direction: column;
+  }
+  /* }
+
+  .poem {
+    order: 2;
+    justify-content: flex-start;
+  }
+
+  .picture {
+    justify-content: flex-end;
+    order: 1;
+  } */
 }

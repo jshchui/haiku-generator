@@ -60,7 +60,7 @@ router.post('/', upload.single('avatar'), function (req, res, next) {
           console.log(mySentence3);
 
           res.render('index', {
-            title: 'Haiku Generated',
+            // title: 'Haiku Generated',
             sentence1: mySentence1,
             sentence2: mySentence2,
             sentence3: mySentence3,
@@ -97,7 +97,7 @@ router.get('/', function(req, res, next) {
 
     res.render('index', {
       title: 'Haiku Generator',
-      pictureURL: pictureFile,
+      // pictureURL: pictureFile,
       imagesInFolder: imagesArray,
     })
   })
