@@ -9,9 +9,30 @@ var XMLHttpRequest = require('xmlhttprequest').XMLHttpRequest;
 var multer = require('multer');
 var upload = multer({ dest: 'public/images'});
 
+const imageDirectory = './public/images/';
+
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').load();
+}
+
 const vision = require('@google-cloud/vision');
+// const client = new vision.ImageAnnotatorClient({
+//   keyFilename: 'jackie-google-vision-key.json'
+// });
+
 const client = new vision.ImageAnnotatorClient({
-  keyFilename: 'jackie-google-vision-key.json'
+  credentials: {
+    "type": process.env.type,
+    "project_id": process.env.project_id,
+    "private_key_id": process.env.private_key_id,
+    "private_key": process.env.private_key,
+    "client_email": process.env.client_email,
+    "client_id": process.env.client_id,
+    "auth_uri": process.env.auth_uri,
+    "token_uri": process.env.token_uri,
+    "auth_provider_x509_cert_url": process.env.auth_provider_x509_cert_url,
+    "client_x509_cert_url": process.env.client_x509_cert_url
+  }
 });
 
 const fs = require('fs');
@@ -21,10 +42,14 @@ router.post('/', upload.single('avatar'), function (req, res, next) {
   // console.log('req.body ::', req.body);
   // console.log('req.file[path]: ', req.file['path']);
   // // res.status(200).send(`${req.file}`)
+  let webWords;
+  let labelWords;
 
   const pictureFile = req.file['filename'];
   const webWordBank = webDetect(req.file['path']).then(results => {
+    webWords = results;
     labelDetect(req.file['path']).then(labelResults => {
+      labelWords = labelResults;
       const combinedWordBank = sortBySyllable([...new Set(results['arrayOfWords'].concat(labelResults))]);
 
       // best guess for web but not currently used
@@ -59,16 +84,32 @@ router.post('/', upload.single('avatar'), function (req, res, next) {
           console.log(mySentence2);
           console.log(mySentence3);
 
-          res.render('index', {
-            // title: 'Haiku Generated',
-            sentence1: mySentence1,
-            sentence2: mySentence2,
-            sentence3: mySentence3,
-            pictureURL: pictureFile,
+          fs.readdir(imageDirectory, (err, files) => {
+            let imagesArray = []
+            files.forEach(file => {
+              imagesArray.push(file)
+            });
+        
+            // res.render('index', {
+            //   title: 'Haiku Generator',
+            //   // pictureURL: pictureFile,
+            //   imagesInFolder: imagesArray,
+            //   imagesAmount: imagesArray.length
+            // })
+
+            res.render('index', {
+              sentence1: mySentence1,
+              sentence2: mySentence2,
+              sentence3: mySentence3,
+              pictureURL: pictureFile,
+              webWords: webWords,
+              labelWords: labelWords,
+              imagesAmount: imagesArray.length
+            })
           })
         })
         .catch(function (err) {
-          console.error('Augh, there was a error UGHGHHH!', err);
+          console.error('Error!', err);
         })
     })
     .catch(err => {
@@ -83,10 +124,13 @@ router.post('/', upload.single('avatar'), function (req, res, next) {
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
+  console.log('process.env: ', process.env);
+  console.log('process.env.client_email: ', process.env.client_email);
+  console.log('process.env.client_email TYPE: ', typeof process.env.client_email);
+  
+  // deletable
   const pictureFile = 'cat.jpg';
   const pictureDirectory = `./public/images/${pictureFile}`;
-
-  const imageDirectory = './public/images/';
 
   
   fs.readdir(imageDirectory, (err, files) => {
@@ -99,6 +143,7 @@ router.get('/', function(req, res, next) {
       title: 'Haiku Generator',
       // pictureURL: pictureFile,
       imagesInFolder: imagesArray,
+      imagesAmount: imagesArray.length
     })
   })
 });
@@ -242,7 +287,6 @@ function webDetect(imagePath) {
 
 function httpGet(url, callback) {
   let xmlHttp = new XMLHttpRequest();
-  console.log('rjunning');
   xmlHttp.onreadystatechange = function() {
     if(xmlHttp.readyState == 4 && xmlHttp.status == 200) {
 

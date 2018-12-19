@@ -2,20 +2,19 @@
 
 html {
   height: 100%;
-  color: gray;
+  color: #b7b7b7;
 }
 
 h1 {
   font: 24px "Montserrat", sans-serif;
   text-transform: uppercase;
-  color: gray;
+  color: #b7b7b7;
 }
 
 body {
   margin: 0;
   padding: 0;
   font: 14px "Cambria", serif;
-  height: 100%;
 }
 
 .loading-overlay {
@@ -31,14 +30,11 @@ body {
   justify-content: center;
 }
 
-a {
-  color: #00B7FF;
-}
-
 img {
   vertical-align: middle;
   border-radius: 10px;
   max-height: 420px;
+  max-width: 500px;
   width: auto;
 }
 
@@ -46,9 +42,14 @@ input[type="file"], input[type="submit"] {
   display: none;
 }
 
+.logo {
+  max-width: 85px;
+  margin: 0.5em;
+}
+
 .container {
   text-align: center;
-  height: 100%;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -56,7 +57,7 @@ input[type="file"], input[type="submit"] {
 }
 
 .haiku-image-container {
-  margin: 0 1em 1em;
+  margin: 2em 1em 1em;;
   box-shadow: 1px 1px 5px 1px grey;
   border-radius: 10px;
   max-width: 500px;
@@ -68,33 +69,34 @@ input[type="file"], input[type="submit"] {
 }
 
 .file-form {
-  display: flex;
+  /* display: flex; */
   justify-content: center;
   margin: 0.8em;
 }
 
 .file-upload, .file-submit {
-  background: grey;
+  background: #b7b7b7;
   padding: 0.5em 2em;
   border-radius: 0.5em;
   color: white;
   text-transform: lowercase;
   margin: 0 1em;
+  height: 30px;
+  box-sizing: border-box;
 }
 
 @media only screen and (max-width: 500px) {
   .container {
     flex-direction: column;
   }
-  /* }
+}
 
-  .poem {
-    order: 2;
-    justify-content: flex-start;
-  }
 
-  .picture {
-    justify-content: flex-end;
-    order: 1;
-  } */
+/*REMOVE*/
+.words-debugger {
+  display: flex;
+}
+.words-debugger div{
+  margin: 1em;
+  flex: 1;
 }

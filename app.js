@@ -10,7 +10,12 @@ var usersRouter = require('./routes/users');
 var hbs = require('express-handlebars');
 var bodyParser = require('body-parser');
 
+// if (process.env.NODE_ENV !== 'production') {
+//   require('dotenv').load();
+// }
+
 var app = express();
+const PORT = process.env.PORT || 3000;
 
 // view engine setup
 app.engine('hbs', hbs({extname: 'hbs', defaultLayout: 'layout', layoutsDir: __dirname + '/views/layouts/'}));
@@ -54,5 +59,9 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+
+app.listen(PORT, () => {
+  console.log(`server is listening on port ${PORT}`)
+})
 
 module.exports = app;
