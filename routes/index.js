@@ -22,18 +22,32 @@ const vision = require('@google-cloud/vision');
 
 const client = new vision.ImageAnnotatorClient({
   credentials: {
-    "type": process.env.type,
-    "project_id": process.env.project_id,
-    "private_key_id": process.env.private_key_id,
-    "private_key": process.env.private_key,
-    "client_email": process.env.client_email,
-    "client_id": process.env.client_id,
-    "auth_uri": process.env.auth_uri,
-    "token_uri": process.env.token_uri,
-    "auth_provider_x509_cert_url": process.env.auth_provider_x509_cert_url,
-    "client_x509_cert_url": process.env.client_x509_cert_url
+      "type": "service_account",
+  "project_id": "vision-project-222502",
+  "private_key_id": "06569040f31f402e18b2ca92afaed8e4a181e593",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCmFYHWMS/ba96u\nullxXp8WjR1PkR0IVz5lj7/O3wY3JagiZlQ1lDKzTt6ZYMEuykNXi5Pzz/f5aoq9\n5Q9OEqJt7TBi1VKhQ/c3ftATSfzqN0oYIo1nOUYryzHdSZYlN9MBcG9l2jFXYVhO\nUngphob3Lq2f1J8lC2hGJZOQYne2ODsm34hzLR3mUKUJ8+jn1xCLccRKEJp10ZnG\nylXxVwAAGr10kPqGpHGtn07Uioc9Rx5blgjBCx8rLv4j42BIiWcrKfDNgsr2y+Fh\n8BvsJaygHzrW8bKL9kojlXxhC9Osca38n5ZAf2Ql9dvABmSRWz502sfmkbIrezt0\nFEbXaBHJAgMBAAECggEACi+sgGoQ4NjLVhUY0kK26CesggpI6Q+MxKbd4T69f1lg\naAe1p3mY6HVwYqDUCF4gZjip0NzS/SmjK8VmPGgZLTvMaWti/4APJAizk1NI30aX\n1UYdPRT+sEXsn4FZY5v6ZY6zTmBlAVJ3m4okU4usMHHc9T4RqrB56z93vvXDGNpd\ntyVuI26/LycTRVXpdRa5nPOKxXJs9UiYLE0JTel99M5vBMTd8PuJ/6ymdXC64pxg\nPYndcbKhdwrBcMe1bfhLY5MXWruhgfu1V1AM+e7O8qp5avbMsKVViYIEoz1KQ4MD\npwDfDtHAN566hg+0tAaidvewjAShn/eJjQ3wzK/LhwKBgQDYzihieJFWGbnCTFuE\nOGZJH6KW+Mi6k0g8Uip7ha56hEi62fKQb1z1At0km2CN6qPgNBlD0hvumkL5dRiO\nc5EiokJVRKfB8AjLhvKEIeYHjPBf5aRwKT3Hjl/84C7ZN6rDpHl/W/JJloSW+/iW\nIqfmIERYbyd5rF151zqK7eONJwKBgQDEG/JEFLqA0timZoUj8eORBOCM0hSL/hQ2\nAa7w39dHJPyZBpRvAS4jxlOXacdkxvMuvzBoGhRHStFNOQ19Pak87qZk3kvIPzWD\nyD2tkqlQNdXHtlfiujqFRJMUna/zHNX/1qJ4nLi6jn2VWLDNhqh8kDDx/CHsimEC\n43uUEPefjwKBgEGzF6Hfj4tb+GLc6M7EmJqIL6k4cvu3Lii5bY5JEHqoI7Ib4dnL\nJYxJ9eHmA/h9pnOG1jErNrOzo6Acz/g7JTwtl5RnXb7zkna6yjsoWqDnIOCuoooq\ntUIH7yaeeRPyPplS+k6R+nY6Wqu2Z7p3fhHKrWtvI7NHfHwzsNXxCQf5AoGARCsm\nuq2t6uvf7W/DpiwGG7njSHAaPlNyuRc6tXZJwexEdfkIjdGONVdSZVaavhg+HijN\nbdJq7CFAwiQr4TYW5xxZ8MQo+ZGnS4jGj9hkTIJ6LnLe9+wePYcJzWfG6q5CYS09\nyslHmWnAk7KBut+tH6eLrAIl1LCBalyi72Q6f1cCgYEAluYUkIHTwDhICYvcAGLC\nYvMmqvXdwoi6eeD5EbfXZTBKotGjxaQvAuuM0TxgnmfbVSfAO5vO40t2IZz4wv/I\nyVa6s/lI+Ok3ZQfAapKzOgghObyEbuInP+H84fmKrulfNtElXyholWafyxa7AELg\nBdfJ9G3eiOUW65aIuKYJS4M=\n-----END PRIVATE KEY-----\n",
+  "client_email": "jackie@vision-project-222502.iam.gserviceaccount.com",
+  "client_id": "107344156590300418333",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/jackie%40vision-project-222502.iam.gserviceaccount.com"
   }
 });
+// const client = new vision.ImageAnnotatorClient({
+//   credentials: {
+//     "type": process.env.type,
+//     "project_id": process.env.project_id,
+//     "private_key_id": process.env.private_key_id,
+//     "private_key": process.env.private_key,
+//     "client_email": process.env.client_email,
+//     "client_id": process.env.client_id,
+//     "auth_uri": process.env.auth_uri,
+//     "token_uri": process.env.token_uri,
+//     "auth_provider_x509_cert_url": process.env.auth_provider_x509_cert_url,
+//     "client_x509_cert_url": process.env.client_x509_cert_url
+//   }
+// });
 
 const fs = require('fs');
 

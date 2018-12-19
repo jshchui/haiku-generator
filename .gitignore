@@ -26,3 +26,5 @@ src/assets/assetcss/triangle.css
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+jackie-google-vision-key.json
