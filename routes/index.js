@@ -132,7 +132,6 @@ router.get('/', function(req, res, next) {
 
     res.render('index', {
       title: 'Haiku Generator',
-      pictureURL: pictureFile,
       imagesInFolder: imagesArray,
       imagesAmount: imagesArray.length
     })
