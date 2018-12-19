@@ -15,7 +15,7 @@ var bodyParser = require('body-parser');
 // }
 
 var app = express();
-const PORT = process.env.PORT || 3000;
+// const PORT = process.env.PORT || 3000;
 
 // view engine setup
 app.engine('hbs', hbs({extname: 'hbs', defaultLayout: 'layout', layoutsDir: __dirname + '/views/layouts/'}));
@@ -60,8 +60,8 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
-app.listen(PORT, () => {
-  console.log(`server is listening on port ${PORT}`)
-})
+// app.listen(PORT, () => {
+//   console.log(`server is listening on port ${PORT}`)
+// })
 
 module.exports = app;
