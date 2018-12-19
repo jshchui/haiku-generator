@@ -138,13 +138,10 @@ router.post('/', upload.single('avatar'), function (req, res, next) {
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  console.log('process.env: ', process.env);
-  console.log('process.env.client_email: ', process.env.client_email);
-  console.log('process.env.client_email TYPE: ', typeof process.env.client_email);
   
   // deletable
-  const pictureFile = 'cat.jpg';
-  const pictureDirectory = `./public/images/${pictureFile}`;
+  // const pictureFile = 'cat.jpg';
+  // const pictureDirectory = `./public/images/${pictureFile}`;
 
   
   fs.readdir(imageDirectory, (err, files) => {
