@@ -138,25 +138,19 @@ router.post('/', upload.single('avatar'), function (req, res, next) {
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  
-  // deletable
-  // const pictureFile = 'cat.jpg';
-  // const pictureDirectory = `./public/images/${pictureFile}`;
-
-  
-  fs.readdir(imageDirectory, (err, files) => {
-    let imagesArray = []
-    files.forEach(file => {
-      imagesArray.push(file)
-    });
+  // fs.readdir(imageDirectory, (err, files) => {
+  //   let imagesArray = []
+  //   files.forEach(file => {
+  //     imagesArray.push(file)
+  //   });
 
     res.render('index', {
       title: 'Haiku Generator',
       // pictureURL: pictureFile,
-      imagesInFolder: imagesArray,
-      imagesAmount: imagesArray.length
+      // imagesInFolder: imagesArray,
+      // imagesAmount: imagesArray.length
     })
-  })
+  // })
 });
 
 
