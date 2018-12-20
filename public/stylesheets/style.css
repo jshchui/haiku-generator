@@ -69,7 +69,6 @@ input[type="file"], input[type="submit"] {
 }
 
 .file-form {
-  /* display: flex; */
   justify-content: center;
   margin: 0.8em;
 }
@@ -88,6 +87,10 @@ input[type="file"], input[type="submit"] {
 @media only screen and (max-width: 500px) {
   .container {
     flex-direction: column;
+  }
+
+  img {
+    max-width: 100%;
   }
 }
 

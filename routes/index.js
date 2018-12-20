@@ -125,7 +125,6 @@ router.post('/', upload.single('avatar'), function (req, res, next) {
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  console.log('processENVironment: ', process.env);
   fs.readdir(imageDirectory, (err, files) => {
     let imagesArray = []
     files.forEach(file => {
