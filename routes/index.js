@@ -20,6 +20,8 @@ const vision = require('@google-cloud/vision');
 //   keyFilename: 'jackie-google-vision-key.json'
 // });
 
+console.log('processENVironment: ', process.env);
+
 const client = new vision.ImageAnnotatorClient({
   credentials: {
     "type": process.env.type,
