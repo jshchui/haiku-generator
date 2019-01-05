@@ -2,13 +2,10 @@
   <p>generating...</p>
 </div>
 
-
 <div class="container">
-  {{!-- {{#if pictureURL}} --}}
-    <div class="haiku-image-container {{#unless pictureURL}}haiku-image-container--hidden{{/unless}}">
-      <img src="./images/{{pictureURL}}" id="haiku-image" />
-    </div>
-  {{!-- {{/if}} --}}
+  <div class="haiku-image-container {{#unless pictureURL}}haiku-image-container--hidden{{/unless}}">
+    <img src="./images/{{pictureURL}}" id="haiku-image" />
+  </div>
 
   {{#if title}}
     <svg class="logo" viewBox="0 0 183.85 187">
@@ -27,7 +24,8 @@
       <p>{{sentence1}}</p>
       <p>{{sentence2}}</p>
       <p>{{sentence3}}</p>
-      <div class="words-debugger">
+      {{!-- uncomment this to show words returned from google vision --}}
+      {{!-- <div class="words-debugger">
         <div>
           <h3>Web Words</h3>
           {{#each webWords.arrayOfWords}}
@@ -46,8 +44,7 @@
             <p>{{this}}</p>
           {{/each}}
         </div>
-      </div>
-
+      </div> --}}
     </div>
   {{/if}}
 
@@ -56,24 +53,7 @@
       <input id="file-upload" type="file" name="avatar" />
       {{#if pictureURL}}retry{{else}}upload{{/if}}
     </label>
-
-    {{!-- <label class="file-submit" for="file-submit">
-      <input id="file-submit" type="submit" />
-      submit
-    </label> --}}
   </form>
 
   <p>images in server: {{imagesAmount}}</p>
-
-
-  {{!-- <div class="files">
-    <h2>Files in Image Folder</h2>
-    {{#each imagesInFolder}}
-      <hr>
-      <p>{{this}}</p>
-    {{/each}}
-  </div> --}}
-
-  <div id="responseLOL"></div>
-
 </div>

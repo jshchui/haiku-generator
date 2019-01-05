@@ -16,6 +16,7 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 const vision = require('@google-cloud/vision');
+// another way to get google vision credentials
 // const client = new vision.ImageAnnotatorClient({
 //   keyFilename: 'jackie-google-vision-key.json'
 // });
@@ -39,10 +40,6 @@ const client = new vision.ImageAnnotatorClient({
 const fs = require('fs');
 
 router.post('/', upload.single('avatar'), function (req, res, next) {
-  // console.log('req.file ::', req.file);
-  // console.log('req.body ::', req.body);
-  // console.log('req.file[path]: ', req.file['path']);
-  // // res.status(200).send(`${req.file}`)
   let webWords;
   let labelWords;
 
@@ -81,22 +78,11 @@ router.post('/', upload.single('avatar'), function (req, res, next) {
           const mySentence2 = generateSentence(wordBank['combinedWordBank'], 7, arrayOfAdjectives);
           const mySentence3 = generateSentence(wordBank['combinedWordBank'], 5, arrayOfAdjectives);
 
-          console.log(mySentence1);
-          console.log(mySentence2);
-          console.log(mySentence3);
-
           fs.readdir(imageDirectory, (err, files) => {
             let imagesArray = []
             files.forEach(file => {
               imagesArray.push(file)
             });
-        
-            // res.render('index', {
-            //   title: 'Haiku Generator',
-            //   // pictureURL: pictureFile,
-            //   imagesInFolder: imagesArray,
-            //   imagesAmount: imagesArray.length
-            // })
 
             res.render('index', {
               sentence1: mySentence1,
@@ -170,11 +156,6 @@ function generateSentence(words, syllables, adjectives) {
   // this should remove the word from the word bank
   const firstWordIndex = words[firstWordSyllables] && words[firstWordSyllables].indexOf(firstWord);
   if ((firstWordIndex || firstWordIndex === 0) && (firstWordIndex !== -1)) {
-    // console.log('----------------------------------------------');
-    // console.log('words: ', words);
-    // console.log('words[firstwordSyllables]: ', words[firstWordSyllables]);
-    // console.log('firstWordSyllalbes: ', firstWordSyllables);
-    // console.log('------------------------------------------------------');
     words[firstWordSyllables].splice(firstWordIndex, 1);
   }
 
@@ -280,8 +261,6 @@ function httpGet(url, callback) {
   let xmlHttp = new XMLHttpRequest();
   xmlHttp.onreadystatechange = function() {
     if(xmlHttp.readyState == 4 && xmlHttp.status == 200) {
-
-      console.log ('i am rest: ', xmlHttp.responseText)
       if(callback) callback(xmlHttp.responseText);
       return null;
     }
@@ -316,44 +295,3 @@ function makeRequest(method, url) {
 }
 
 module.exports = router;
-
-
-
-
-
-
-
-
-// router.post('/:file', upload.single('avatar'), function(req, res) {
-//   console.log('i entered here');
-//   var contentType = req.headers['content-type'] || ''
-//     , mime = contentType.split(';')[0];
-
-//   // if (mime != 'text/plain') {
-//   //   return next();
-//   // }
-
-//   var data = '';
-//   req.setEncoding('utf8');
-//   req.on('data', function(chunk) {
-//     data += chunk;
-//   });
-//   req.on('end', function() {
-//     req.rawBody = data;
-
-//     console.log('req.rawBody: ', req.rawBody);
-//   });
-
-//   console.log('req.params: ', req.params);
-//   console.log('req.body: ', req.body);
-//   console.log('res.body: ', res.body);
-//   console.log('req.fields: ', req.fields);
-//   console.log('req.route: ', req.route);
-//   console.log('req.file: ', req.file);
-
-//   // res.status(200).send(req.rawBody);
-//   res.status(200).send(`${req.rawBody}`);
-//   // res.status(200).json({
-//   //   json: request
-//   // });
-// });
